@@ -14,10 +14,10 @@
             filePath = "testapp3/sceneview.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "11"
-            endingLineNumber = "11"
-            landmarkName = "sceneview"
-            landmarkType = "14">
+            startingLineNumber = "12"
+            endingLineNumber = "12"
+            landmarkName = "SceneController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

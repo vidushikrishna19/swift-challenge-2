@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SceneKit
+import ARKit
 
 // Controller class to handle cube movement
 class SceneController {
