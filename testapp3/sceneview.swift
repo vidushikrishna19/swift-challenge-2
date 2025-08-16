@@ -47,11 +47,13 @@ class SceneController {
 struct sceneview: View {
     let scene = SCNScene()
     let controller = SceneController()
+    @State private var displayLink: CADisplayLink?
+       var cameraNode = SCNNode()
 
     var body: some View {
         SceneView(
             scene: scene,
-            pointOfView: nil,
+            pointOfView: cameraNode,
             options: [.allowsCameraControl, .autoenablesDefaultLighting]
         )
         .onAppear {
@@ -79,9 +81,9 @@ struct sceneview: View {
     }
 
     func startChase() {
-        // CADisplayLink calls the controller every frame
-        let displayLink = CADisplayLink(target: controller, selector: #selector(SceneController.runUpdate))
-        displayLink.add(to: .current, forMode: .default)
+        let link = CADisplayLink(target: controller, selector: #selector(SceneController.runUpdate))
+        link.add(to: .main, forMode: .default)
+        displayLink = link
     }
 }
 
