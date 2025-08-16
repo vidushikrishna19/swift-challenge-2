@@ -10,7 +10,7 @@ import RealityKit
 
 struct ContentView : View {
     @State private var showQuestDialog = false // controls whether the quest thingy alert is shown
-    @State private var ghostSpawned = false // prevents multiple ghosts from spawning
+    @State private var ghostSpawned = false // prevents/lets multiple ghosts from spawning
 
     var body: some View {
         RealityView { content in
@@ -23,14 +23,14 @@ struct ContentView : View {
             cube.components.set(ModelComponent(mesh: mesh, materials: [material]))
             cube.position = [0, 0.05, 0]
             
-            // anchor the cube onto a horizontal surface
+            // puts the cube onto a horizontal surface
             let anchor = AnchorEntity(.plane(.horizontal, classification: .any, minimumBounds: SIMD2<Float>(0.2, 0.2)))
             anchor.addChild(cube)
             content.add(anchor)
             content.camera = .spatialTracking
             
         } update: { content, attachments in
-                   // Make ghost chase the camera
+                   // makes the ghost chase the camera
                    guard let ghost = content.entities.first(where: { $0.name == "ghost" }),
                          let cameraTransform = content.cameraTransform else { return }
 
@@ -53,7 +53,7 @@ struct ContentView : View {
         } attachments: {
                    // Spawn ghost once when cube is tapped
                    if showQuestDialog && !ghostSpawned {
-                       RealityViewAttachment(id: "ghost") { _ in
+                       Attachment(id: "ghost") { _ in
                            let ghost = Entity()
                            ghost.name = "ghost"
                            ghost.components.set(ModelComponent(
