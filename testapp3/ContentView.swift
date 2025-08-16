@@ -9,15 +9,15 @@ import SwiftUI
 import RealityKit
 
 struct ContentView : View {
-    @State private var showQuestDialog = false
-    @State private var ghostSpawned = false
+    @State private var showQuestDialog = false // controls whether the quest thingy alert is shown
+    @State private var ghostSpawned = false // prevents multiple ghosts from spawning
 
     var body: some View {
         RealityView { content in
             // creates the quest-giver cube
-            let cube = Entity()
-            cube.name = "questGiver"
             
+            let cube = Entity()
+            cube.name = "questGiver" // creates the entity which acts as the quest giver cube
             let mesh = MeshResource.generateBox(size: 0.1)
             let material = SimpleMaterial(color: .blue, isMetallic: true)
             cube.components.set(ModelComponent(mesh: mesh, materials: [material]))
