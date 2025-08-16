@@ -6,24 +6,75 @@
 //
 
 import SwiftUI
-import RealityKit
+import SceneKit
 
 struct sceneview: View {
+    // The SceneKit scene
+    let scene = SCNScene()
+    @State private var cubeNode: SCNNode?
+
     var body: some View {
-        RealityView { content in
-            // Create a cube entity
-            let cube = ModelEntity(
-                mesh: .generateBox(size: 0.2),
-                materials: [SimpleMaterial(color: .blue, isMetallic: false)]
-            )
-            
-            // Place cube in front of camera
-            cube.position = [0, 0, -0.5]
-            
-            // Add to scene
-            content.add(cube)
+        SceneView(
+            scene: scene,
+            pointOfView: nil,
+            options: [.allowsCameraControl, .autoenablesDefaultLighting]
+        )
+        .onAppear {
+            setupScene()
+            startChase()
         }
         .ignoresSafeArea()
+    }
+
+    func setupScene() {
+        // Add camera at origin
+        let cameraNode = SCNNode()
+        cameraNode.camera = SCNCamera()
+        cameraNode.position = SCNVector3(0, 0, 0)
+        scene.rootNode.addChildNode(cameraNode)
+
+        // Add cube in front of camera
+        let cube = SCNBox(width: 0.2, height: 0.2, length: 0.2, chamferRadius: 0)
+        let cubeNode = SCNNode(geometry: cube)
+        cubeNode.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
+        cubeNode.position = SCNVector3(0, 0, -1)
+        scene.rootNode.addChildNode(cubeNode)
+        self.cubeNode = cubeNode
+    }
+
+    func startChase() {
+        // Move cube toward camera every frame
+        let displayLink = CADisplayLink(target: self, selector: #selector(updateCube))
+        displayLink.add(to: .current, forMode: .default)
+    }
+
+    @objc func updateCube() {
+        guard let cubeNode = cubeNode else { return }
+
+        // Camera is at origin
+        let cameraPos = SCNVector3(0, 0, 0)
+        var direction = SCNVector3(
+            cameraPos.x - cubeNode.position.x,
+            cameraPos.y - cubeNode.position.y,
+            cameraPos.z - cubeNode.position.z
+        )
+
+        let distance = sqrt(direction.x*direction.x + direction.y*direction.y + direction.z*direction.z)
+
+        if distance > 0.05 {
+            // Normalize direction
+            direction.x /= distance
+            direction.y /= distance
+            direction.z /= distance
+
+            // Move cube toward camera
+            cubeNode.position.x += direction.x * 0.01
+            cubeNode.position.y += direction.y * 0.01
+            cubeNode.position.z += direction.z * 0.01
+
+            // Rotate cube to face camera
+            cubeNode.look(at: cameraPos)
+        }
     }
 }
 
