@@ -8,10 +8,44 @@
 import SwiftUI
 import SceneKit
 
+// Controller class to handle cube movement
+class SceneController {
+    var cubeNode: SCNNode?
+
+    // Called by CADisplayLink every frame
+    @objc func runUpdate() {
+        guard let cubeNode = cubeNode else { return }
+
+        // Camera at origin
+        let cameraPos = SCNVector3(0, 0, 0)
+        var direction = SCNVector3(
+            cameraPos.x - cubeNode.position.x,
+            cameraPos.y - cubeNode.position.y,
+            cameraPos.z - cubeNode.position.z
+        )
+
+        let distance = sqrt(direction.x*direction.x + direction.y*direction.y + direction.z*direction.z)
+
+        if distance > 0.05 {
+            // Normalize direction
+            direction.x /= distance
+            direction.y /= distance
+            direction.z /= distance
+
+            // Move cube toward camera
+            cubeNode.position.x += direction.x * 0.01
+            cubeNode.position.y += direction.y * 0.01
+            cubeNode.position.z += direction.z * 0.01
+
+            // Rotate cube to face camera
+            cubeNode.look(at: cameraPos)
+        }
+    }
+}
+
 struct sceneview: View {
-    // The SceneKit scene
     let scene = SCNScene()
-    @State private var cubeNode: SCNNode?
+    let controller = SceneController()
 
     var body: some View {
         SceneView(
@@ -39,42 +73,14 @@ struct sceneview: View {
         cubeNode.geometry?.firstMaterial?.diffuse.contents = UIColor.blue
         cubeNode.position = SCNVector3(0, 0, -1)
         scene.rootNode.addChildNode(cubeNode)
-        self.cubeNode = cubeNode
+
+        controller.cubeNode = cubeNode
     }
 
     func startChase() {
-        // Move cube toward camera every frame
-        let displayLink = CADisplayLink(target: self, selector: #selector(updateCube))
+        // CADisplayLink calls the controller every frame
+        let displayLink = CADisplayLink(target: controller, selector: #selector(SceneController.runUpdate))
         displayLink.add(to: .current, forMode: .default)
-    }
-
-    @objc func updateCube() {
-        guard let cubeNode = cubeNode else { return }
-
-        // Camera is at origin
-        let cameraPos = SCNVector3(0, 0, 0)
-        var direction = SCNVector3(
-            cameraPos.x - cubeNode.position.x,
-            cameraPos.y - cubeNode.position.y,
-            cameraPos.z - cubeNode.position.z
-        )
-
-        let distance = sqrt(direction.x*direction.x + direction.y*direction.y + direction.z*direction.z)
-
-        if distance > 0.05 {
-            // Normalize direction
-            direction.x /= distance
-            direction.y /= distance
-            direction.z /= distance
-
-            // Move cube toward camera
-            cubeNode.position.x += direction.x * 0.01
-            cubeNode.position.y += direction.y * 0.01
-            cubeNode.position.z += direction.z * 0.01
-
-            // Rotate cube to face camera
-            cubeNode.look(at: cameraPos)
-        }
     }
 }
 
