@@ -6,11 +6,24 @@
 //
 
 import SwiftUI
-import SceneKit
+import RealityKit
 
 struct sceneview: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        RealityView { content in
+            // Create a cube entity
+            let cube = ModelEntity(
+                mesh: .generateBox(size: 0.2),
+                materials: [SimpleMaterial(color: .blue, isMetallic: false)]
+            )
+            
+            // Place cube in front of camera
+            cube.position = [0, 0, -0.5]
+            
+            // Add to scene
+            content.add(cube)
+        }
+        .ignoresSafeArea()
     }
 }
 
