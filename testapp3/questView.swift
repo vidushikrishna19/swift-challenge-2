@@ -36,7 +36,6 @@ class QuestManager {
     func startQuest() {
         if currentQuestIndex < quests.count {
             print("Quest: \(quests[currentQuestIndex])")
-            // TODO: implement Rock-Paper-Scissors UI
             completeQuest()
         } else {
             // All quests done
