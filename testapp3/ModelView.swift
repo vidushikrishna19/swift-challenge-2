@@ -35,7 +35,7 @@ struct ModelView : View {
             
             while true { // if the model exists
                 if let model = model {
-                    if let cameraTransform = await RealityView.cameraTransform { // ts gives where the user's position acc is in the space
+                    if let cameraTransform = await RealityView<<#Content: View#>>.cameraTransform { // ts gives where the user's position acc is in the space
                         let cameraPosition = cameraTransform.translation // where the person is
                         let modelPosition = model.position(relativeTo: nil) // where the camera is
                         

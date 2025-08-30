@@ -325,8 +325,6 @@ struct GameResult {
 enum Winner {
     case player, ai
 }
-
-@main
 struct RockPaperScissorsApp: App {
     var body: some SwiftUI.Scene {
         WindowGroup {
