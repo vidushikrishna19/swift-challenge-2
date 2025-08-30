@@ -87,9 +87,14 @@ struct RockPaperScissorsView: View {
         
         // Determine winner after animation completes
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
-            gameResult = determineWinner(player: choice, ai: aiChoice!)
-            isAnimating = false
-            
+            if aiChoice != nil{
+                print("has a value")
+                gameResult = determineWinner(player: choice, ai: aiChoice!)
+                isAnimating = false
+            }
+            else {
+             print("Does not have a value")
+            }
             // Reset after showing result
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                 resetGame()
