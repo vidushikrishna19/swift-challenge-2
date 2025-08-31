@@ -1,0 +1,12 @@
+{
+  "data" : [
+    {
+      "filename" : "afunwebsite",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
