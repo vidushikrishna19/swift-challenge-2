@@ -8,20 +8,20 @@
 import SwiftUI
 import RealityKit
 
-struct ModelView1 : View {
+struct ContentView : View {
     @State private var model: ModelEntity?
     @State private var cameraAnchor: AnchorEntity?
     
     var body: some View {
         RealityView { content in
             // Load model
-            let model = try! await ModelEntity(named: "tired_young_person")
-            model.scale = [0.01, 0.01, 0.01]
-            model.position = [0, 0.05, -0.5]
+            let model = try! await ModelEntity(named: "Baldi_usdz")
+            model.scale = [0.001, 0.001, 0.001]
+            model.position = [0, 0.01, -0.5]
             
             let model1 = try! await ModelEntity(named: "low_poly_person")
-            model1.scale = [0.001, 0.001, 0.001]
-            model1.position = [0, 0.01, 0.5]
+            model1.scale = [0.01, 0.01, 0.01]
+            model1.position = [1, 0.01, 0.5]
             
             // Anchor on a horizontal plane
             let anchor = AnchorEntity(.plane(.horizontal,
@@ -51,7 +51,7 @@ struct ModelView1 : View {
                     await model.move(
                         to: Transform(translation: cameraPos),
                         relativeTo: nil,
-                        duration: 10.5,
+                        duration: 140.5,
                         timingFunction: .easeOut
                     )
                 }
@@ -65,6 +65,5 @@ struct ModelView1 : View {
     }
 }
 
-#Preview {
-    ModelView1()
-}
+
+
