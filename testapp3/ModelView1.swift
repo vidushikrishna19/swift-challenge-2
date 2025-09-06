@@ -60,8 +60,11 @@ struct ContentView : View {
             Task {
                 await float()
             }
+            
         }
         .ignoresSafeArea(edges: .all)
+        
+        
     }
 }
 
