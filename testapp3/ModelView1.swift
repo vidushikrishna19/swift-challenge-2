@@ -52,7 +52,7 @@ struct ContentView : View {
                     await model.move(
                         to: Transform(translation: cameraPos),
                         relativeTo: nil,
-                        duration: 140.5,
+                        duration: 500.5,
                         timingFunction: .easeOut
                     )
                 }
