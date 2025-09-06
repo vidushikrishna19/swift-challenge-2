@@ -43,6 +43,7 @@ struct ContentView : View {
             content.add(cameraAnchor)
             
             content.camera = .spatialTracking
+            startHorrorGame(entity: model)
             
             func float() async {
                 while true {
@@ -57,6 +58,7 @@ struct ContentView : View {
                 }
             }
             
+           
             Task {
                 await float()
             }
@@ -65,6 +67,41 @@ struct ContentView : View {
         .ignoresSafeArea(edges: .all)
         
         
+    }
+    func startHorrorGame(entity: Entity) {
+        // Load scream audio
+        Task {
+            do {
+                guard let audioURL = Bundle.main.url(
+                    forResource: "608752__soundburst__scream-1",
+                    withExtension: "mp3"
+                ) else {
+                    print("Scream file missing")
+                    return
+                }
+                
+                let screamAudio = try await AudioFileResource.load(
+                    contentsOf: audioURL,
+                    inputMode: .spatial,
+                    loadingStrategy: .preload
+                )
+                
+                
+                // Start scream sounds
+                startScreaming(entity: entity, audio: screamAudio)
+                
+            } catch {
+                print("Audio error: \(error)")
+            }
+        }
+    }
+    func startScreaming(entity: Entity, audio: AudioFileResource) {
+        Task {
+            while true {
+                entity.playAudio(audio)
+                try? await Task.sleep(for: .seconds(3))
+            }
+        }
     }
 }
 
