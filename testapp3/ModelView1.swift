@@ -11,7 +11,7 @@ import RealityKit
 struct ModelView1 : View {
     @State private var model: ModelEntity?
     @State private var cameraAnchor: AnchorEntity?
-
+    
     var body: some View {
         RealityView { content in
             // Load model
@@ -30,32 +30,27 @@ struct ModelView1 : View {
             // Add camera anchor (follows the headset automatically)
             let cameraAnchor = AnchorEntity(.camera)
             content.add(cameraAnchor)
-            self.cameraAnchor = cameraAnchor
             
-        } update: { content in
-            guard let model = model, let cameraAnchor = cameraAnchor else { return }
+            content.camera = .spatialTracking
             
-            let cameraPos = cameraAnchor.position(relativeTo: nil)
-            let modelPos = model.position(relativeTo: nil)
-            let distance = simd_distance(cameraPos, modelPos)
+            func float() async {
+                while true {
+                    let cameraPos = cameraAnchor.position(relativeTo: nil)
+                    
+                    await model.move(
+                        to: Transform(translation: cameraPos),
+                        relativeTo: nil,
+                        duration: 10.5,
+                        timingFunction: .easeOut
+                    )
+                }
+            }
             
-            if distance > 0.15 {
-                // Keep moving toward camera until 15 cm away
-                let targetPos = SIMD3<Float>(
-                    cameraPos.x,
-                    modelPos.y,
-                    cameraPos.z - 0.1
-                )
-                
-                model.move(
-                    to: Transform(translation: targetPos),
-                    relativeTo: nil,
-                    duration: 0.3,
-                    timingFunction: .easeInOut
-                )
+            Task {
+                await float()
             }
         }
-        .edgesIgnoringSafeArea(.all)
+        .ignoresSafeArea(edges: .all)
     }
 }
 
