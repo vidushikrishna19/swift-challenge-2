@@ -43,7 +43,7 @@ struct ContentView : View {
             content.add(cameraAnchor)
             
             content.camera = .spatialTracking
-            startHorrorGame(entity: model)
+            model.addChild(createSpatialAudio())
             
             func float() async {
                 while true {
@@ -66,35 +66,28 @@ struct ContentView : View {
         }
         .ignoresSafeArea(edges: .all)
         
-        
     }
-    func startHorrorGame(entity: Entity) {
-        // Load scream audio
-        Task {
-            do {
-                guard let audioURL = Bundle.main.url(
-                    forResource: "608752__soundburst__scream-1",
-                    withExtension: "mp3"
-                ) else {
-                    print("Scream file missing")
-                    return
-                }
-                
-                let screamAudio = try await AudioFileResource.load(
-                    contentsOf: audioURL,
-                    inputMode: .spatial,
-                    loadingStrategy: .preload
-                )
-                
-                
-                // Start scream sounds
-                startScreaming(entity: entity, audio: screamAudio)
-                
-            } catch {
-                print("Audio error: \(error)")
-            }
-        }
-    }
+    func createSpatialAudio() -> Entity {
+          // 1.
+          let audioSource = Entity()
+          
+          // 2.
+          audioSource.spatialAudio = SpatialAudioComponent(gain: -5)
+          
+          do {
+              // 3.
+              let resource = try AudioFileResource.load(named: "608752__soundburst__scream-1g", configuration: .init(shouldLoop: true))
+
+              // 4.
+              audioSource.playAudio(resource)
+          } catch {
+              print("Error loading audio file: \\(error.localizedDescription)")
+          }
+          
+          // 5.
+          return audioSource
+      }
+  
     func startScreaming(entity: Entity, audio: AudioFileResource) {
         Task {
             while true {

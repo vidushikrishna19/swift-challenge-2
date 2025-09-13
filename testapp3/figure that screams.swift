@@ -10,6 +10,7 @@ import RealityKit
 
 struct SlenderManView: View {
     var body: some View {
+        
         RealityView { content in
             // Create the Slender Man entity
             let tallFigure = createSlenderMan()
